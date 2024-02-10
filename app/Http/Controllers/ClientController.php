@@ -22,10 +22,16 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'nom' => 'required',
-            'prenom' => 'required',
-            'adresse' => 'required',
-            'date_naissance' => 'nullable'
+            'nom' => ['required', 'string', 'max:255', 'regex:/^[a-zA-Z\s\-]{2,}$/'],
+            'prenom' => ['required', 'string', 'regex:/^[a-zA-Z][a-zA-Z]{2,}\s/'],
+            'adresse' => ['required', 'string', 'max:255'],
+            'date_naissance' => ['required', 'date', 'before_or_equal: -18 years'],
+        ], [
+            'nom.required' => 'Veuillez entrer un nom valide',
+            'prenom.required' => 'Veuillez entrer un prénom valide, deux lettres minimum',
+            'adresse.required' => 'Où habitez vous? A defaut, indiquer les alentours',
+            'date_naissance.required' => 'Vous devez etre majeur pour avoir un compte',
+            
         ]);
 
         $client  = new Client();
